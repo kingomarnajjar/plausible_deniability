@@ -174,7 +174,7 @@
         <header>
             <h1>Plausible Deniability</h1>
             <p>GitHub Subdomain Registration</p>
-            <p><em>"I have no idea how that got on my website, your honour!"</em> 👨‍⚖️</p>
+            <p><em>"I have no idea how that got on my website, officer!"</em> 🕵️‍♂️</p>
         </header>
         
         <div class="info-box">
@@ -202,9 +202,9 @@
                 <div class="requirements">
                     <small>Your repository must:</small>
                     <ul>
-                        <li><small>Be public</small></li>
-                        <li><small>Have a valid index.html file in the root or docs folder</small></li>
-                        <li><small>Not contain malicious code</small></li>
+                        <li><small>Be public (unless you've discovered time travel, then please DM us)</small></li>
+                        <li><small>Have a valid index.html file in the root or docs folder (we're not magicians)</small></li>
+                        <li><small>Not contain malicious code (we draw the line at mild mischief)</small></li>
                     </ul>
                 </div>
             </div>
@@ -314,10 +314,6 @@
                     return;
                 }
                 
-                // Disable submit button and show loading spinner
-                submitBtn.disabled = true;
-                loading.style.display = 'block';
-                
                 // Collect form data
                 const formData = {
                     name: document.getElementById('name').value || "Anonymous",
@@ -327,90 +323,58 @@
                     description: document.getElementById('description').value
                 };
                 
-                // Simulate API call with timeout
+                // Show loading spinner briefly for effect
+                submitBtn.disabled = true;
+                loading.style.display = 'block';
+                
+                // Create GitHub issue
                 setTimeout(function() {
-                    // In a real application, this would be an actual API call
-                    // Example:
-                    // fetch('https://api.theradicalparty.com/register-subdomain', {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Content-Type': 'application/json'
-                    //     },
-                    //     body: JSON.stringify(formData)
-                    // })
-                    // .then(response => response.json())
-                    // .then(data => { ... })
-                    // .catch(error => { ... });
-                    
-                    // For demonstration, randomly succeed or fail
-                    const isSuccess = Math.random() > 0.3; // 70% success rate for demo
-                    
                     // Hide loading spinner
                     loading.style.display = 'none';
                     
-                    if (isSuccess) {
+                    try {
+                        // Format the issue title and body
+                        const issueTitle = `Subdomain Request: ${formData.subdomain}.theradicalparty.com`;
+                        const issueBody = `
+## Subdomain Request
+
+**Alt Name:** ${formData.name}
+**Alt Email:** ${formData.email === "anonymous@example.com" ? "None provided" : formData.email}
+**GitHub Repo:** ${formData.repo}
+**Desired Subdomain:** ${formData.subdomain}
+
+### Description
+${formData.description}
+
+---
+*Submitted via Plausible Deniability form*
+`;
+
+                        // Create the GitHub issue URL
+                        // Replace 'your-username/plausible-deniability' with your actual GitHub repo
+                        const githubIssueUrl = `https://github.com/your-username/plausible-deniability/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=subdomain-request`;
+                        
                         // Show success message
                         successMessage.style.display = 'block';
-                        // Reset form
+                        
+                        // Open the GitHub issue in a new tab
+                        window.open(githubIssueUrl, '_blank');
+                        
+                        // Reset the form
                         form.reset();
-                    } else {
+                    } catch (error) {
                         // Show error message
-                        errorText.textContent = "There was an error processing your request. The subdomain may already be taken or the GitHub repository couldn't be verified.";
+                        errorText.textContent = "There was an error creating the GitHub issue. Please try again.";
                         errorMessage.style.display = 'block';
+                        console.error("Error:", error);
                     }
                     
                     // Re-enable submit button
                     submitBtn.disabled = false;
-                    
-                    // Log the form data (remove in production)
-                    console.log('Form submission:', formData);
-                }, 2000); // Simulate 2-second processing time
+                }, 1000); // Show loading for 1 second for effect
             });
             
-            // Check for subdomain availability (could be implemented with an actual API endpoint)
-            let typingTimer;
-            const doneTypingInterval = 1000; // 1 second
-            
-            subdomainInput.addEventListener('keyup', function() {
-                clearTimeout(typingTimer);
-                if (this.value) {
-                    typingTimer = setTimeout(checkSubdomainAvailability, doneTypingInterval);
-                }
-            });
-            
-            function checkSubdomainAvailability() {
-                const subdomain = subdomainInput.value;
-                
-                if (!isValidSubdomain(subdomain)) {
-                    return; // Don't check invalid subdomains
-                }
-                
-                // In a real application, you would make an API call here
-                // Example:
-                // fetch(`https://api.theradicalparty.com/check-subdomain?name=${subdomain}`)
-                //     .then(response => response.json())
-                //     .then(data => {
-                //         if (!data.available) {
-                //             subdomainInput.setCustomValidity("This subdomain is already taken");
-                //         } else {
-                //             subdomainInput.setCustomValidity("");
-                //         }
-                //     });
-                
-                // For demonstration, randomly determine availability (remove in production)
-                const blacklist = ['www', 'mail', 'admin', 'root', 'api'];
-                if (blacklist.includes(subdomain)) {
-                    subdomainInput.setCustomValidity("This subdomain is reserved and not available");
-                } else {
-                    // Randomly determine availability (90% chance of being available)
-                    const isAvailable = Math.random() > 0.1;
-                    if (!isAvailable) {
-                        subdomainInput.setCustomValidity("This subdomain is already taken");
-                    } else {
-                        subdomainInput.setCustomValidity("");
-                    }
-                }
-            }
+            // Check for subdomain availability is removed since this will be handled via GitHub issues
         });
     </script>
 </body>
