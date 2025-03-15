@@ -1,3 +1,5 @@
+![showandtell](/wot.png)
+
 # Plausible Deniability
 
 *"I have no idea how that got on my website, your honour!"* 👨‍⚖️
