@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plausible Deniability - GitHub Subdomain Registration</title>
+    <style>
+        :root {
+            --primary-color: #ff3e00;
+            --secondary-color: #40b3ff;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(64, 179, 255, 0.5);
+        }
+        
+        button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #e63600;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .info-box {
+            background-color: rgba(64, 179, 255, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .info-box h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .message {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .error {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid var(--error-color);
+            color: var(--error-color);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .requirements {
+            margin-top: 1rem;
+        }
+        
+        .requirements ul {
+            padding-left: 1.5rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plausible Deniability</h1>
+            <p>GitHub Subdomain Registration</p>
+            <p><em>"I have no idea how that got on my website, your honour!"</em> 👨‍⚖️</p>
+        </header>
+        
+        <div class="info-box">
+            <h3>How It Works</h3>
+            <p>Submit your GitHub repository information to get a subdomain at theradicalparty.com (e.g., yourproject.theradicalparty.com) to showcase your work. Name and email are optional for anonymous submissions.</p>
+            <p><strong>Disclaimer:</strong> We are not responsible for any FBI raids, angry emails from your boss, or sudden career changes that may result from your submission. 😉</p>
+        </div>
+        
+        <form id="subdomain-form">
+            <div class="form-group">
+                <label for="name">Alt Name:</label>
+                <input type="text" id="name" name="name" placeholder="Definitely Not FBI Agent #42">
+                <small>Your super secret identity. We won't tell.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Alt Email:</label>
+                <input type="email" id="email" name="email" placeholder="totallylegitimate@notfake.com">
+                <small>Where we'll send your honorary hacktivist membership card.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="github-repo">GitHub Repository URL:</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="https://github.com/username/repository" required>
+                <div class="requirements">
+                    <small>Your repository must:</small>
+                    <ul>
+                        <li><small>Be public</small></li>
+                        <li><small>Have a valid index.html file in the root or docs folder</small></li>
+                        <li><small>Not contain malicious code</small></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="subdomain">Desired Subdomain:</label>
+                <input type="text" id="subdomain" name="subdomain" placeholder="definitely-not-illegal-stuff" required>
+                <small>This will become: yourproject.theradicalparty.com (Choose wisely, future whistleblower!)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Project Description:</label>
+                <textarea id="description" name="description" rows="4" placeholder="My project is absolutely not trying to [REDACTED] the [REDACTED] with a giant [REDACTED]..." required></textarea>
+                <small>Tell us what your project does. Keep it PG-13... or don't, we're not your mom.</small>
+            </div>
+            
+            <button type="submit" id="submit-btn">Submit & Establish Plausible Deniability</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your request... (and deleting all evidence of this transaction)</p>
+        </div>
+        
+        <div class="message success" id="success-message">
+            <h3>Success! Your Alibi is Established!</h3>
+            <p>We've received your subdomain request and will review it shortly. If you provided an email, you'll receive a notification once your subdomain is ready.</p>
+            <p><small>Remember: "I was just testing the security" is always a valid excuse.</small></p>
+        </div>
+        
+        <div class="message error" id="error-message">
+            <h3>Error: Reality Malfunction</h3>
+            <p id="error-text">There was a problem submitting your request. Please try again.</p>
+            <p><small>The cyberpunk dystopia we live in is experiencing technical difficulties.</small></p>
+        </div>
+    </div>
+    
+    <footer>
+        <!-- Footer content removed as requested -->
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('subdomain-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const githubRepoInput = document.getElementById('github-repo');
+            const subdomainInput = document.getElementById('subdomain');
+            
+            // Validate GitHub URL format
+            function isValidGithubUrl(url) {
+                const pattern = /^https:\/\/github\.com\/[a-zA-Z0-9-]+\/[a-zA-Z0-9._-]+\/?$/;
+                return pattern.test(url);
+            }
+            
+            // Validate subdomain format
+            function isValidSubdomain(subdomain) {
+                const pattern = /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/;
+                return pattern.test(subdomain);
+            }
+            
+            // Add input validation for GitHub repo URL
+            githubRepoInput.addEventListener('blur', function() {
+                if (this.value && !isValidGithubUrl(this.value)) {
+                    this.setCustomValidity("Please enter a valid GitHub repository URL");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            
+            // Add input validation for subdomain
+            subdomainInput.addEventListener('blur', function() {
+                if (this.value && !isValidSubdomain(this.value)) {
+                    this.setCustomValidity("Subdomain must contain only lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+            
+            // Convert subdomain to lowercase
+            subdomainInput.addEventListener('input', function() {
+                this.value = this.value.toLowerCase();
+            });
+            
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Hide any previous messages
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                
+                // Validate GitHub URL
+                if (!isValidGithubUrl(githubRepoInput.value)) {
+                    errorText.textContent = "Please enter a valid GitHub repository URL";
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Validate subdomain
+                if (!isValidSubdomain(subdomainInput.value)) {
+                    errorText.textContent = "Subdomain must contain only lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen";
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Disable submit button and show loading spinner
+                submitBtn.disabled = true;
+                loading.style.display = 'block';
+                
+                // Collect form data
+                const formData = {
+                    name: document.getElementById('name').value || "Anonymous",
+                    email: document.getElementById('email').value || "anonymous@example.com",
+                    repo: githubRepoInput.value,
+                    subdomain: subdomainInput.value,
+                    description: document.getElementById('description').value
+                };
+                
+                // Simulate API call with timeout
+                setTimeout(function() {
+                    // In a real application, this would be an actual API call
+                    // Example:
+                    // fetch('https://api.theradicalparty.com/register-subdomain', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json'
+                    //     },
+                    //     body: JSON.stringify(formData)
+                    // })
+                    // .then(response => response.json())
+                    // .then(data => { ... })
+                    // .catch(error => { ... });
+                    
+                    // For demonstration, randomly succeed or fail
+                    const isSuccess = Math.random() > 0.3; // 70% success rate for demo
+                    
+                    // Hide loading spinner
+                    loading.style.display = 'none';
+                    
+                    if (isSuccess) {
+                        // Show success message
+                        successMessage.style.display = 'block';
+                        // Reset form
+                        form.reset();
+                    } else {
+                        // Show error message
+                        errorText.textContent = "There was an error processing your request. The subdomain may already be taken or the GitHub repository couldn't be verified.";
+                        errorMessage.style.display = 'block';
+                    }
+                    
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    
+                    // Log the form data (remove in production)
+                    console.log('Form submission:', formData);
+                }, 2000); // Simulate 2-second processing time
+            });
+            
+            // Check for subdomain availability (could be implemented with an actual API endpoint)
+            let typingTimer;
+            const doneTypingInterval = 1000; // 1 second
+            
+            subdomainInput.addEventListener('keyup', function() {
+                clearTimeout(typingTimer);
+                if (this.value) {
+                    typingTimer = setTimeout(checkSubdomainAvailability, doneTypingInterval);
+                }
+            });
+            
+            function checkSubdomainAvailability() {
+                const subdomain = subdomainInput.value;
+                
+                if (!isValidSubdomain(subdomain)) {
+                    return; // Don't check invalid subdomains
+                }
+                
+                // In a real application, you would make an API call here
+                // Example:
+                // fetch(`https://api.theradicalparty.com/check-subdomain?name=${subdomain}`)
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         if (!data.available) {
+                //             subdomainInput.setCustomValidity("This subdomain is already taken");
+                //         } else {
+                //             subdomainInput.setCustomValidity("");
+                //         }
+                //     });
+                
+                // For demonstration, randomly determine availability (remove in production)
+                const blacklist = ['www', 'mail', 'admin', 'root', 'api'];
+                if (blacklist.includes(subdomain)) {
+                    subdomainInput.setCustomValidity("This subdomain is reserved and not available");
+                } else {
+                    // Randomly determine availability (90% chance of being available)
+                    const isAvailable = Math.random() > 0.1;
+                    if (!isAvailable) {
+                        subdomainInput.setCustomValidity("This subdomain is already taken");
+                    } else {
+                        subdomainInput.setCustomValidity("");
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
